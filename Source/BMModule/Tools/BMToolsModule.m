@@ -22,7 +22,7 @@
 
 @synthesize weexInstance;
 
-WX_EXPORT_METHOD(@selector(scan:));
+WX_EXPORT_METHOD(@selector(scan:callback:));
 WX_EXPORT_METHOD(@selector(resignKeyboard:));
 WX_EXPORT_METHOD(@selector(copyString:callback:));
 WX_EXPORT_METHOD(@selector(addWatermark:));
@@ -32,11 +32,12 @@ WX_EXPORT_METHOD(@selector(watchNetworkStatus:));
 WX_EXPORT_METHOD(@selector(clearWatchNetworkStatus));
 
 /** 调用扫一扫 */
-- (void)scan:(WXModuleCallback)callback
+- (void)scan:(NSString *)createStatus callback:(WXModuleCallback)callback
 {
     BMScanQRViewController *scanQrVc = [[BMScanQRViewController alloc] init];
     scanQrVc.hidesBottomBarWhenPushed = YES;
     scanQrVc.callback = callback;
+    scanQrVc.createStatus = createStatus;
     [weexInstance.viewController.navigationController pushViewController:scanQrVc animated:YES];
 }
 

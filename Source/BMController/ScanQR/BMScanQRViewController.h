@@ -12,5 +12,5 @@
 @interface BMScanQRViewController : UIViewController
 
 @property (nonatomic, copy) WXModuleCallback callback;
-
+@property (nonatomic, copy) NSString *createStatus;
 @end

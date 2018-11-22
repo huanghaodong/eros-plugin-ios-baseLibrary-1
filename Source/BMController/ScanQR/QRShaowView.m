@@ -37,7 +37,7 @@
     CGContextSetRGBFillColor(ctx, 0.15, 0.15, 0.15, 0.6);
     CGContextFillRect(ctx, rect);
     
-    CGRect clearDrawRect = CGRectMake((rect.size.width - self.showSize.width) / 2, (rect.size.height - self.showSize.height) / 2, self.showSize.width, self.showSize.height);
+    CGRect clearDrawRect = CGRectMake((rect.size.width - self.showSize.width) / 2, (rect.size.height - self.showSize.height) / 2-100, self.showSize.width, self.showSize.height);
     CGContextClearRect(ctx, clearDrawRect);
     
     //边框
@@ -56,7 +56,7 @@
     float cornerLong = 16.0;
     
     CGContextSetLineWidth(ctx, cornerWidth);
-    CGContextSetRGBStrokeColor(ctx, 83/255.0, 239/255.0, 111/255.0, 1);
+    CGContextSetRGBStrokeColor(ctx, 1, 1, 1, 1);
     
     //左上角
     CGPoint poinsTopLeftA[] = {CGPointMake(rect.origin.x + cornerWidth/2, rect.origin.y),
@@ -110,7 +110,7 @@
 {
     [super layoutSubviews];
     
-    _line.frame = CGRectMake((self.width - self.showSize.width) / 2, (self.height - self.showSize.height) / 2, self.showSize.width, 2);
+    _line.frame = CGRectMake((self.width - self.showSize.width) / 2, (self.height - self.showSize.height) / 2-100, self.showSize.width, 2);
 }
 
 #pragma mark - Public Func

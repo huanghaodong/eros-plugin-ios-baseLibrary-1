@@ -1,3 +1,4 @@
+
 //
 //  BMScanQRViewController.m
 //  WeexDemo
@@ -92,21 +93,62 @@ typedef NS_ENUM(NSInteger, AlertType) {
     [self.shadowView showAnimation];
     [SVProgressHUD dismiss];
     
-    JYTTitleLabel * label = [[JYTTitleLabel alloc] initWithFrame:CGRectMake(10, (self.view.height - self.showSize.height) / 2 - 60, K_SCREEN_WIDTH - 10 * 2, 60)];
-    label.text = @"将条码放入框内，即可自动扫描";
+    JYTTitleLabel * label = [[JYTTitleLabel alloc] initWithFrame:CGRectMake(10, (self.view.height - self.showSize.height) / 2 + 210, K_SCREEN_WIDTH - 10 * 2, 60)];
+    label.text = @"请对准商品条形码，耐心等待";
     label.textColor = [UIColor whiteColor];
     label.textAlignment = 1;
     label.lineBreakMode = 0;
     label.numberOfLines = 0;
     label.backgroundColor = [UIColor clearColor];
     [self.view addSubview:label];
+    UIButton * doneBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    doneBtn.frame = CGRectMake((self.view.width-60)/2-5,self.view.height - 170, 70, 70);
+    doneBtn.backgroundColor = [UIColor whiteColor];
+    //网络图片
+//    NSURL *url = [NSURL URLWithString:@"http://cdn.udian.me/click.png"];
+//    [doneBtn setImage:[UIImage imageWithData:[NSData dataWithContentsOfURL:url] ] forState:UIControlStateNormal];
+    //本地图片
+    [doneBtn setImage:[UIImage imageNamed:@"Click"] forState:UIControlStateNormal];
+    
+    [doneBtn setImageEdgeInsets:UIEdgeInsetsMake(20, 20, 20, 20)];
+    //设置圆角的大小
+    doneBtn.layer.cornerRadius = 35;
+    //此行代码必须有（UIView例外）
+    doneBtn.layer.masksToBounds = YES;
+    doneBtn.titleLabel.font = [UIFont systemFontOfSize:15];
+    [doneBtn setTitle:@"按钮" forState:UIControlStateNormal];
+    [doneBtn addTarget:self     action:@selector(clickdoneWithButton:)  forControlEvents:UIControlEventTouchUpInside];
+    
+    JYTTitleLabel * labelShort = [[JYTTitleLabel alloc] initWithFrame:CGRectMake(10, self.view.height - 90, K_SCREEN_WIDTH - 10 * 2, 60)];
+    labelShort.text = @"手动创建";
+    labelShort.font = [UIFont fontWithName:@"手动创建" size:50];
+    labelShort.textColor = [UIColor whiteColor];
+    labelShort.textAlignment = 1;
+    labelShort.lineBreakMode = 0;
+    labelShort.numberOfLines = 0;
+    labelShort.backgroundColor = [UIColor clearColor];
+    if([self.createStatus isEqualToString:@"2"]){
+        [self.view addSubview:doneBtn];
+        [self.view addSubview:labelShort];
+    }
+    
+    //    UIView * view2 = [[UIView alloc]initWithFrame:CGRectMake(10, 10, 100, 100)];
+    //    view2.backgroundColor=[UIColor greenColor];
+    //    view2.layer.cornerRadius = 50;
+    //    [self.view addSubview:view2];
+    
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    //编辑右按钮
+    //UIBarButtonItem *myButton = [[UIBarButtonItem alloc] initWithTitle:@"输入条形码" style:UIBarButtonItemStyleBordered target:self action:@selector(clickEvent)];
     
-    self.navigationItem.title = @"扫一扫";
+    
+    //self.navigationItem.rightBarButtonItem = myButton;
+    
+    self.navigationItem.title = @"扫描商品";
     self.navigationController.fd_prefersNavigationBarHidden = NO;
     self.view.backgroundColor = [UIColor blackColor];
     
@@ -137,7 +179,22 @@ typedef NS_ENUM(NSInteger, AlertType) {
         [SVProgressHUD showWithStatus:@"扫描器初始化中..."];
     });
 }
-
+-(void)clickdoneWithButton:(UIButton *)button
+{
+    if (self.callback) {
+        NSString *string1 = @"1";
+        NSDictionary *resultData = [NSDictionary configCallbackDataWithResCode:BMResCodeSuccess msg:nil data:string1];
+        
+        /* 将扫码结果回传给js */
+        if (self.callback) {
+            self.callback(resultData);
+            self.callback = nil;
+        }
+        
+    }
+    
+    [self.navigationController popViewControllerAnimated:YES];
+   }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -171,20 +228,20 @@ typedef NS_ENUM(NSInteger, AlertType) {
         
         //设置扫码支持的编码格式(如下设置条形码和二维码兼容)
         _output.metadataObjectTypes=@[AVMetadataObjectTypeQRCode,AVMetadataObjectTypeEAN13Code, AVMetadataObjectTypeEAN8Code, AVMetadataObjectTypeCode128Code];
-//  @[
-//                                      AVMetadataObjectTypeUPCECode,
-//                                      AVMetadataObjectTypeCode39Code,
-//                                      AVMetadataObjectTypeCode39Mod43Code,
-//                                      AVMetadataObjectTypeEAN13Code,
-//                                      AVMetadataObjectTypeEAN8Code,
-//                                      AVMetadataObjectTypeCode93Code,
-//                                      AVMetadataObjectTypeCode128Code,
-//                                      AVMetadataObjectTypePDF417Code,
-//                                      AVMetadataObjectTypeQRCode,
-//                                      AVMetadataObjectTypeAztecCode
-//                                      ];
+        //  @[
+        //                                      AVMetadataObjectTypeUPCECode,
+        //                                      AVMetadataObjectTypeCode39Code,
+        //                                      AVMetadataObjectTypeCode39Mod43Code,
+        //                                      AVMetadataObjectTypeEAN13Code,
+        //                                      AVMetadataObjectTypeEAN8Code,
+        //                                      AVMetadataObjectTypeCode93Code,
+        //                                      AVMetadataObjectTypeCode128Code,
+        //                                      AVMetadataObjectTypePDF417Code,
+        //                                      AVMetadataObjectTypeQRCode,
+        //                                      AVMetadataObjectTypeAztecCode
+        //                                      ];
         
-
+        
         //        _output.rectOfInterest = CGRectMake(<#CGFloat x#>, <#CGFloat y#>, <#CGFloat width#>, <#CGFloat height#>)
         
         // Preview
@@ -225,7 +282,7 @@ typedef NS_ENUM(NSInteger, AlertType) {
         //换算出 分辨率比 对应的 屏幕高
         CGFloat finalHeight = self.layerViewSize.width * deviceProportion;
         // 得到 偏差值
-        CGFloat addNum = (finalHeight - self.layerViewSize.height) / 2;
+        CGFloat addNum = (finalHeight - self.layerViewSize.height) / 2-100;
         
         // (对应的实际位置 + 偏差值)  /  换算后的屏幕高
         self.output.rectOfInterest = CGRectMake((shearRect.origin.y + addNum) / finalHeight,
@@ -237,7 +294,7 @@ typedef NS_ENUM(NSInteger, AlertType) {
         
         CGFloat finalWidth = self.layerViewSize.height / deviceProportion;
         
-        CGFloat addNum = (finalWidth - self.layerViewSize.width) / 2;
+        CGFloat addNum = (finalWidth - self.layerViewSize.width) / 2-100;
         
         self.output.rectOfInterest = CGRectMake(shearRect.origin.y / self.layerViewSize.height,
                                                 (shearRect.origin.x + addNum) / finalWidth,
